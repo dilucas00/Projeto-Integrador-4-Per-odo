@@ -17,4 +17,4 @@ class Config:
     # Configurações do MongoDB
     MONGO_URI = os.getenv("MONGO_URI")
     DB_NAME = os.getenv("DB_NAME", "sensor_data")
-    COLLECTION_NAME = os.getenv("COLLECTION_NAME", "dht11_readings")
+    COLLECTION_NAME = os.getenv("COLLECTION_NAME", "Dados Temperatura e Umidade - DHT11")

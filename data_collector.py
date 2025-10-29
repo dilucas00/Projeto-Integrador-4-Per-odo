@@ -19,7 +19,7 @@ class ThingSpeakCollector:
             if data and 'feeds' in data and data['feeds']:
                 feed = data['feeds'][0]
                 
-                # Processamento de dados
+                # Processamento de dados (Transformação)
                 processed_data = self._process_feed(feed)
                 print("Dados coletados com sucesso.")
                 return processed_data
@@ -42,7 +42,7 @@ class ThingSpeakCollector:
         else:
             timestamp = datetime.now(timezone.utc)
         
-        # Cria o documento no MongoDB
+        # Cria o documento a ser inserido no MongoDB
         document = {
             "timestamp": timestamp,
             "temperatura": float(feed.get('field1', 0)),

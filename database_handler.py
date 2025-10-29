@@ -18,6 +18,7 @@ class MongoDBHandler:
             db = self.client[self.config.DB_NAME]
             collection = db[self.config.COLLECTION_NAME]
             
+            # Insere o documento
             result = collection.insert_one(document)
             print(f"Documento inserido com sucesso! ID: {result.inserted_id}")
             
