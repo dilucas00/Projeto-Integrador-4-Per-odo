@@ -1,40 +1,39 @@
+import os
 import requests
 from pymongo import MongoClient
+from dotenv import load_dotenv
 
 from datetime import datetime, timezone
 
-# --- Configurações ---
+# Carrega variáveis do arquivo .env (se existir)
+load_dotenv()
+
 # Informações do ThingSpeak
-THINGSPEAK_CHANNEL_ID = "3096127"
-THINGSPEAK_READ_API_KEY = "1UJ2EAZLMVTQY62M"
-THINGSPEAK_URL = f"https://api.thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/feeds.json?api_key={THINGSPEAK_READ_API_KEY}&results=1"
+THINGSPEAK_CHANNEL_ID = os.getenv("THINGSPEAK_CHANNEL_ID")
+THINGSPEAK_READ_API_KEY = os.getenv("THINGSPEAK_READ_API_KEY")
+THINGSPEAK_URL = os.getenv("THINGSPEAK_URL",
+                           f"https://api.thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/feeds.json?api_key={THINGSPEAK_READ_API_KEY}&results=1")
 
 # Informações do MongoDB
-MONGO_URI = "mongodb+srv://gabrieldilucas00_db_user:x4V27GRBTAnwAYjQ@clusterpi.5lal4hi.mongodb.net/?appName=ClusterPI"
-DB_NAME = "sensor_data"
-COLLECTION_NAME = "dht11_readings"
+MONGO_URI = os.getenv("MONGO_URI")
+DB_NAME = os.getenv("DB_NAME", "sensor_data")
+COLLECTION_NAME = os.getenv("COLLECTION_NAME")
 
 def fetch_thingspeak_data():
     """Busca o último registro de temperatura e umidade do ThingSpeak."""
     print(f"Buscando dados em: {THINGSPEAK_URL}")
     try:
         response = requests.get(THINGSPEAK_URL)
-        response.raise_for_status()  # Levanta exceção para erros HTTP
+        response.raise_for_status()  
         data = response.json()
         
-        # O ThingSpeak retorna um array de feeds, pegamos o último (o único que pedimos com results=1)
+    
         if data and 'feeds' in data and data['feeds']:
             feed = data['feeds'][0]
-            
-            # O DHT11 geralmente usa field1 para temperatura e field2 para umidade (ou vice-versa)
-            # Assumindo que field1 é temperatura e field2 é umidade.
-            # Se a ordem estiver errada, o usuário pode ajustar os nomes das chaves aqui.
             
             # Converte a string de data/hora do ThingSpeak para um objeto datetime
             timestamp_str = feed.get('created_at')
             if timestamp_str:
-                # O ThingSpeak usa formato ISO 8601, mas com 'Z' no final para UTC
-                # Python precisa de um pequeno ajuste para o fuso horário
                 timestamp = datetime.strptime(timestamp_str, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
             else:
                 timestamp = datetime.now(timezone.utc)
