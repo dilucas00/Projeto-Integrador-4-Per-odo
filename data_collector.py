@@ -44,9 +44,9 @@ class ThingSpeakCollector:
         
         # Cria o documento a ser inserido no MongoDB
         document = {
-            "timestamp": timestamp,
-            "temperatura": float(feed.get('field1', 0)),
-            "umidade": float(feed.get('field2', 0)),
+            "Timestamp": timestamp,
+            "Temperatura C°": float(feed.get('field1', 0)),
+            "Tmidade": float(feed.get('field2', 0)),
             "source_id": feed.get('entry_id')
         }
         return document

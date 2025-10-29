@@ -21,10 +21,4 @@ def run_pipeline():
         print("Pipeline encerrada sem armazenamento devido à falha na coleta de dados.")
 
 if __name__ == "__main__":
-    try:
-        while True:
-            run_pipeline()
-            print("\n--- Aguardando 2 minutos para a próxima coleta... ---\n")
-            time.sleep(120)
-    except KeyboardInterrupt:
-        print("\nPipeline interrompida pelo usuário.")
+    run_pipeline()
